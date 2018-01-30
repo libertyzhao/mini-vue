@@ -10,5 +10,22 @@
 <body>
   <div id="root"></div>
   <script src="./static/bundle.js"></script>
+  <script id="t1" type="text/html">
+    <div>
+      <span>{{a}}</span>
+      {{b}}{{c}}
+    </div>
+  </script>
+  <script>
+    window.a = new LV({
+      el:'#root',
+      template:'#t1',
+      data:{
+        a:11,
+        b:'hello',
+        c:'world'
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 import getPlugin from './get-plugin';
 import { name } from '../package.json';
 
-const entry = 'es/index.js';
-const moduleName = name.replace(/-(\w)/g, ($, $1) => $1.toUpperCase());
+const entry = 'src/index.js';
+const moduleName = 'LV';
 
 export default [{
   input: entry,

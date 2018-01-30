@@ -6,7 +6,8 @@ export default {
   output: {
     file: 'public/static/bundle.js',
     format: 'iife',
-    sourcemap: config.dev
+    sourcemap: config.dev,
+    moduleName:'LV'
   },
   plugins: [
     getPlugin('progress', {
