@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>mini-vue</title>
+  <title>mini-lv</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <link rel="icon" href="./favicon.ico">
   <link rel="stylesheet" href="./static/style.css">
@@ -23,7 +23,19 @@
       data:{
         a:11,
         b:'hello',
-        c:'world'
+        c:'world',
+        arr:[1,2],
+      },
+      watch:{
+        arr(value){
+          console.log('我更新了'+value);
+        }
+      },
+      computed:{
+        d(){
+          console.log('自动执行');
+          return this.c;
+        }
       }
     });
   </script>
