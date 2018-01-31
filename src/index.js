@@ -1,4 +1,4 @@
-import { defineProxy, defineReactive, Watcher, Computed } from './reactive';
+import { defineProxy, defineReactive, Watcher, Computed, Render } from './reactive';
 
 function LV(options){
 	this.init(options);
@@ -7,12 +7,14 @@ function LV(options){
 LV.prototype.init = function(options){
 	mergeOptions(this,options)
 	this.initMethod(this);
-	this.initRender(this);
 	this.initState(this);
+	this.initRender(this);
 }
 
 LV.prototype.initRender = function(lv){
-
+	let templateDom = lv.template;
+	let template = document.querySelector(templateDom).innerText;
+	var render = new Render(lv,template);
 }
 
 LV.prototype.initState = function(lv){
@@ -48,7 +50,6 @@ function initWatch(lv){
 	let watch = lv.watch;
 	Object.keys(watch).forEach(key=>{
 		let watcher = new Watcher(lv,watch,key);
-		watch[key].watcher = watcher;
 	})
 }
 
@@ -56,7 +57,6 @@ function initComputed(lv){
 	let computed = lv.computed;
 	Object.keys(computed).forEach(key=>{
 		let computer = new Computed(lv,computed,key);
-		computed[key].computer = computer;
 		defineProxy(lv,key,lv.data);
 	})
 }

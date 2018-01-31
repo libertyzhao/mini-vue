@@ -12,8 +12,8 @@
   <script src="./static/bundle.js"></script>
   <script id="t1" type="text/html">
     <div>
-      <span>{{a}}</span>
-      {{b}}{{c}}
+      <span>{{a.c}}</span>
+      {{b}}{{arr[0]}}
     </div>
   </script>
   <script>
@@ -21,7 +21,7 @@
       el:'#root',
       template:'#t1',
       data:{
-        a:11,
+        a:{c:1},
         b:'hello',
         c:'world',
         arr:[1,2],
