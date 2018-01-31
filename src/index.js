@@ -1,4 +1,5 @@
 import { defineProxy, defineReactive, Watcher, Computed, Render } from './reactive';
+import { cleanHtml } from './template';
 
 function LV(options){
 	this.init(options);
@@ -14,6 +15,7 @@ LV.prototype.init = function(options){
 LV.prototype.initRender = function(lv){
 	let templateDom = lv.template;
 	let template = document.querySelector(templateDom).innerText;
+	template = cleanHtml(template);
 	var render = new Render(lv,template);
 }
 
