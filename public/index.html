@@ -6,12 +6,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <link rel="icon" href="./favicon.ico">
   <link rel="stylesheet" href="./static/style.css">
+  <style>
+    input{
+      border:none;
+      background: red;
+    }
+  </style>
 </head>
 <body>
   <div id="root"></div>
   <script src="./static/bundle.js"></script>
   <script id="t1" type="text/html">
-    <div>
+    <div class="a" data-abc="123">
+      <img src="" alt="" >
+      <input type="text" >
       <span>{{a.c}}</span>
       {{b}}{{arr[0]}}
     </div>

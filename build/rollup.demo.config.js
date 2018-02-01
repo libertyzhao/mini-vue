@@ -3,6 +3,7 @@ import getPlugin from './get-plugin';
 
 export default {
   input: 'src/index.js',
+  // input:'html.js',
   output: {
     file: 'public/static/bundle.js',
     format: 'iife',

@@ -1,4 +1,4 @@
-import { createRender } from "./template";
+import { createRender, renderHtml } from "./template";
 
 export function defineProxy(lv, key, proxy) {
   Object.defineProperty(lv, key, {
@@ -96,13 +96,11 @@ function arrReactive(arr, ob) {
   arr.__proto__ = middleware;
 }
 
-export function Render(lv, template) {
+export function Render(lv, template, htmlAst) {
 	let dom = document.querySelector(lv.el);
   let render = createRender(template);
-  DepTarget = () => {
-		let html = render(lv);
-		dom.innerHTML = html;
-	};
+  DepTarget = renderHtml.bind(lv,dom,render);
   DepTarget();
 	DepTarget = null;
 }
+

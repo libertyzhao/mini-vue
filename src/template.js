@@ -1,3 +1,5 @@
+import { parseHtml } from './htmlParse';
+import { diff } from './diff';
 
 export function createRender(template) {
   let reg = /{{[ \t]*([\w\W]*?)[ \t]*}}/g,
@@ -16,12 +18,19 @@ export function cleanHtml(template){
 	return div.innerHTML;
 }
 
-export function createVnode(template){
-	// var reg = //g
-}
-
-function Vnode(tagName, props, children) {
-  this.tagName = tagName;
-  this.props = props;
-  this.children = children;
+export function renderHtml(dom,render){
+	let html = render(this);
+	let vnode = parseHtml(html);
+	if(!this.newVnode){
+		this.newVnode = vnode;
+		
+	}else if(this.newVnode && this.oldVnode){
+		this.newVnode = this.oldVnode;
+		this.oldVnode = vnode;
+		diff(this.oldVnode,this.newVnode);
+	}else{
+		this.oldVnode = vnode;
+		diff(this.oldVnode,this.newVnode);
+	}
+	dom.innerHTML = html;
 }
