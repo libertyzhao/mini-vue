@@ -26,6 +26,7 @@ var startTagClose = /^\s*(\/?)>/;
 var endTag = `<\/([a-zA-Z]*)[^>]*>`;
 
 var target = null;
+var nodeId = 1;
 
 export function parseHtml(html, Vnode = createVnode()) {
   if (!html) {
@@ -89,6 +90,7 @@ function parseProps(html, Vnode) {
   var result = null;
   while ((result = html.match(attribute))) {
     Vnode.attrList.push(result[0]);
+    Vnode.attrString += result[0];
     html = forward(html, result[0].length);
   }
   return html;
@@ -105,7 +107,8 @@ function createVnode() {
     tagName: "",
     parent: null,
     attrList: [],
-    children: []
+    children: [],
+    attrString:'',
   };
 }
 

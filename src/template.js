@@ -21,16 +21,40 @@ export function cleanHtml(template){
 export function renderHtml(dom,render){
 	let html = render(this);
 	let vnode = parseHtml(html);
-	if(!this.newVnode){
-		this.newVnode = vnode;
-		
-	}else if(this.newVnode && this.oldVnode){
-		this.newVnode = this.oldVnode;
+	console.log(vnode);
+	if(!this.oldVnode){
 		this.oldVnode = vnode;
-		diff(this.oldVnode,this.newVnode);
+		var fra = document.createDocumentFragment();
+		var elDom = createDom(vnode,fra);
+		fra.appendChild(elDom);
+		dom.appendChild(fra)
 	}else{
-		this.oldVnode = vnode;
+		this.newVnode = vnode;
 		diff(this.oldVnode,this.newVnode);
 	}
-	dom.innerHTML = html;
 }
+
+export function createDom(vnode,fra){
+	if(vnode.tagName === ''){
+		return ;
+	}if(vnode.tagName === 'text'){
+		var dom = document.createTextNode(vnode.children);
+	}else{
+		var dom = document.createElement(vnode.tagName);
+		childrenDom(vnode.children,dom);
+	}
+	vnode.el = dom;
+	return dom;
+}
+
+export function childrenDom(children,dom){
+	if(children){
+		for(let i = 0, length = children.length ; i < length ; i++){
+			let eldom = null;
+			if(eldom = createDom(children[i],dom)){
+				dom.appendChild(eldom);
+			}
+		}
+	}
+}
+
