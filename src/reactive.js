@@ -70,7 +70,7 @@ export function Computed(lv, computed, key) {
   DepTarget = () => {
     lv.data[key] = computed[key]();
   };
-  computed[key]();
+  lv.data[key] = computed[key]();
   DepTarget = null;
 }
 

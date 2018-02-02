@@ -2,7 +2,7 @@ import config from './config';
 import getPlugin from './get-plugin';
 
 export default {
-  input: 'src/index.js',
+  input: 'src/lv.js',
   // input:'html.js',
   output: {
     file: 'public/static/bundle.js',

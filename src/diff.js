@@ -1,5 +1,6 @@
 import { createDom,childrenDom } from './template';
 
+//保证每次diff之后，oldVnode永远是最新的
 export function diff(oldVnode,Vnode){
 	if(sameNode(oldVnode,Vnode)){
 		patchVnode(oldVnode,Vnode);
@@ -28,8 +29,10 @@ function patchVnode(oldVnode,Vnode){
 			oldVnode.children = Vnode.children;
 		}
 	}else {
-		if(oldVnode.attrString !== Vnode.attrList){
-			//需要替换props
+		if(oldVnode.attrString !== Vnode.attrString){			//需要替换props
+			replaceAttr(oldVnode.el,Vnode.attrList);
+			oldVnode.attrString = Vnode.attrString;
+			oldVnode.attrList = Vnode.attrList;
 		}
 		// if (oldChildren && children) {
 			diffChildren(oldChildren, children);
@@ -59,6 +62,9 @@ function diffChildren(oldVnodeChildren,VnodeChildren){
 	}
 }
 
-function replaceAttr(){
-
+function replaceAttr(dom,attr){
+	for(var i = 0, length = attr.length ; i < length ; i++){
+		let keyValue = attr[i].split('=');
+		dom.setAttribute(keyValue[0],keyValue[1]);
+	}
 }
