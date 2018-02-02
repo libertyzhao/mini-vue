@@ -38,6 +38,25 @@ function recursiveObj(obj, ob) {
 
 var DepTarget = null; //被收集的watcher
 
+let notifyStrategy = {//通知策略
+  'watch':function(func,args){
+    func.apply(undefined,args);
+  },
+  'computed':function(func,args){
+    func.call(undefined);
+  },
+  rendering:false,
+  'render':function(func,args){
+    if(!this.rendering){
+      this.rendering = true;
+      setTimeout(() => {
+        func();
+        this.rendering = false;
+      }, 0);
+    }
+  }
+}
+
 function Observable(value) {
   this.value = value;
   this.dep = [];
@@ -54,21 +73,30 @@ function Observable(value) {
   this.notify = function(value) {
     var deps = this.dep.slice();
     for (var i = 0, length = deps.length; i < length; i++) {
-      deps[i](value);
+      let type = deps[i].type,
+          func = deps[i].cb,
+          args = value;
+      notifyStrategy[type](func,args);
     }
   };
 }
 
 export function Watcher(lv, watch, key) {
-  DepTarget = watch[key];
+  DepTarget = {
+    type:'watch',
+    cb:watch[key],
+  };
   lv.data[key];
   DepTarget = null;
 }
 
 export function Computed(lv, computed, key) {
   lv.data = lv.data || {};
-  DepTarget = () => {
-    lv.data[key] = computed[key]();
+  DepTarget = {
+    type:'computed',
+    cb:() => {
+      lv.data[key] = computed[key]();
+    }
   };
   lv.data[key] = computed[key]();
   DepTarget = null;
@@ -99,8 +127,11 @@ function arrReactive(arr, ob) {
 export function Render(lv, template, htmlAst) {
 	let dom = document.querySelector(lv.el);
   let render = createRender(template);
-  DepTarget = renderHtml.bind(lv,dom,render);
-  DepTarget();
+  DepTarget = {
+    type:'render',
+    cb:renderHtml.bind(lv,dom,render),
+  };
+  DepTarget.cb();
 	DepTarget = null;
 }
 
