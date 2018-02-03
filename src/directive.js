@@ -54,8 +54,11 @@ function injectData(template){//这里只添加最后的数据
 }
 
 function lIf(attr, parent ,vnode, lv){// 条件渲染
-	let value = attr.split('=')[1];
-	if(value){
+	let attrArr = attr.split('='),
+			val = attrArr[1],
+			{value} = getDirectiveValue(val,lv);
+	value = JSON.parse(value);
+	if(!value){
 		vnode.directive = true;
 		vnode.text = vnode.tagName;
 		vnode.tagName = 'comment';
@@ -63,22 +66,27 @@ function lIf(attr, parent ,vnode, lv){// 条件渲染
 }
 
 function lOn(attr, parent ,vnode, lv){// 事件绑定
-	// let value = attr.split('=')[1];
+	let attrArr = attr.split('='),
+			key = attrArr[0],
+			val = attrArr[1],
+			{result} = getDirectiveValue(val,lv),
+			event = key.split('on')[1];
+			setTimeout(() => {
+				vnode.el.addEventListener(event,lv[result[result.length-1]]);
+			}, 0);
 }
 
 function lFor(attr, parent ,vnode, lv){// 列表循环
-	let value = attr.split('=')[1],
-			reg = /([^"'(),\s]+)/g;
-	let result = value.match(reg);
-	let arr = injectData(`{{${result[result.length-1]}}}`)(lv).split(','),
-			item = result[0],
+	let attrArr = attr.split('='),
+			val = attrArr[1],
+			{value,result} = getDirectiveValue(val,lv),
+			arr = value.split(','),
+			item =result[0],
 			index = 'index';
 	if(result.length > 3){
 		index = result[1];
 	}
-	let arrItem = {
-		item,index
-	},node,nodeIndex;
+	let node,nodeIndex;
 	for(var i = 0 , length = arr.length ; i < length ; i++){
 		if(i < length - 1){
 			node = cloneVnode(vnode);
@@ -91,6 +99,13 @@ function lFor(attr, parent ,vnode, lv){// 列表循环
 		vnode.directive = true;
 		vnode = node;
 	}
+}
+
+function getDirectiveValue(val,lv){
+	let reg = /([^"'(),\s=]+)/g,
+			result = val.match(reg),
+			value = injectData(`{{${result[result.length-1]}}}`)(lv);
+	return {value,result};
 }
 
 function filterEmpty(Vnode){

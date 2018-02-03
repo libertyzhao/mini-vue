@@ -43,6 +43,9 @@ LV.prototype.initMethod = function(lv){
 	bindThis(lv.methods,lv);
 	bindThis(lv.computed,lv);
 	bindThis(lv.watch,lv);
+	Object.keys(methods).forEach(key=>{
+		defineProxy(lv,key,methods);
+	})
 }
 
 function initData(lv){
