@@ -5,14 +5,13 @@ import { createVnode } from './htmlParse';
 export function diff(oldVnode,Vnode){
 	if(sameNode(oldVnode,Vnode)){
 		patchVnode(oldVnode,Vnode);
-	}else{//直接用当前dom替换以前的dom
+	}else{
 		const el = oldVnode.el;
 		const parentEl = el.parentNode;
 		createDom(Vnode);//生成新的dom
 		if (parentEl !== null) {
 			parentEl.insertBefore(Vnode.el,el.nextSibling)//插入新的dom
-			parentEl.removeChild(el)//移除之前的dom
-			oldVnode = Vnode
+			parentEl.removeChild(el);//移除之前的dom
 		}
 	}
 	return Vnode;
@@ -23,7 +22,6 @@ function sameNode(oldVnode,Vnode){
 }
 
 function patchVnode(oldVnode,Vnode){
-	let oldChildren = oldVnode.children, children = Vnode.children;
 	if(Vnode.tagName === 'text' && oldVnode.tagName === 'text' ){
 		if(Vnode.text !== oldVnode.text){
 			oldVnode.el.textContent = Vnode.text;
@@ -36,7 +34,7 @@ function patchVnode(oldVnode,Vnode){
 			oldVnode.attrList = Vnode.attrList;
 		}
 		// if (oldChildren && children) {
-			diffChildren(oldChildren, children);
+			diffChildren(oldVnode, Vnode);
 		// }else if (children){
 		// 	childrenDom(children,oldVnode.el);
 		// 	oldVnode = Vnode;//创建一个新dom
@@ -54,12 +52,24 @@ function patchVnode(oldVnode,Vnode){
 	}
 }
 
-function diffChildren(oldVnodeChildren,VnodeChildren){
+function diffChildren(oldVnode,Vnode){
+	let VnodeChildren = Vnode.children, oldVnodeChildren = oldVnode.children;
 	const max = Math.max(VnodeChildren.length,oldVnodeChildren.length);
 	for(var i = 0 ; i < max ; i++ ){
-		let oldVnode = oldVnodeChildren[i];
-		let Vnode = VnodeChildren[i] || createVnode();
-		diff(oldVnode,Vnode);
+		let oNode = oldVnodeChildren[i];
+		let node = VnodeChildren[i];
+
+		if(!oNode){//说明新增了节点
+			createDom(node);
+			oldVnodeChildren[i] = node;
+			oldVnode.el.appendChild(node.el);
+		}else if(!node){//说明删除了节点
+			oldVnode.el.removeChild(oldVnodeChildren[i].el);
+			oldVnodeChildren.splice(i,1);
+		}else{
+			diff(oNode,node);
+		}
+
 	}
 }
 
