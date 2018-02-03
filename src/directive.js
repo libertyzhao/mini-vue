@@ -29,6 +29,9 @@ export function parseDirective(attr, parent, vnode, lv){
 		if(attr[i].includes('l-if')){
 			lIf(attr[i], parent, vnode, lv)
 		}
+		if(attr[i].includes('l-on')){
+			lOn(attr[i], parent, vnode, lv)
+		}
 	}
 }
 
@@ -50,7 +53,7 @@ function injectData(template){//这里只添加最后的数据
 	return render;
 }
 
-function lIf(attr, parent ,vnode, lv){
+function lIf(attr, parent ,vnode, lv){// 条件渲染
 	let value = attr.split('=')[1];
 	if(value){
 		vnode.directive = true;
@@ -58,8 +61,12 @@ function lIf(attr, parent ,vnode, lv){
 		vnode.tagName = 'comment';
 	}
 }
-//<li l-for="(item,index) in arr">{{item}}</li>
-function lFor(attr, parent ,vnode, lv){
+
+function lOn(attr, parent ,vnode, lv){// 事件绑定
+	// let value = attr.split('=')[1];
+}
+
+function lFor(attr, parent ,vnode, lv){// 列表循环
 	let value = attr.split('=')[1],
 			reg = /([^"'(),\s]+)/g;
 	let result = value.match(reg);

@@ -24,7 +24,7 @@
 var singleTag = "br hr img input";
 
 var startTagOpen = /<(\/)?([a-zA-Z]*)[^>\/]*(\/)?>/;
-var attribute = /^\s*([^\s=]*)=(["'\w\s(),]*)/;
+var attribute = /^\s*([^\s=]*)=(["'\w\s(),]*"|')/; //考虑兼容l-for指令的一些情况
 var startTagClose = /^\s*(\/?)>/;
 var endTag = `<\/([a-zA-Z]*)[^>]*>`;
 
@@ -72,7 +72,8 @@ function parseDom(html, Vnode) {
     html = forward(html, result[0].length);
   } else {//如果不是结束标签
     Vnode.tagName = result[2];
-    if (!result[3] && !singleTag.includes(result[2])) {//如果不是类似input之类的单闭合标签
+    var reg = new RegExp(`\\b${result[2]}\\b`)
+    if (!result[3] && !singleTag.match(reg)) {//如果不是类似input之类的单闭合标签
       Vnode.children[0] = createVnode();
       target = Vnode.children[0];
       target.parent = Vnode;

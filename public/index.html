@@ -20,7 +20,8 @@
     <div class="a" data-abc="123">
       <img src="" alt="" >
       <input type="text" >
-      <span l-if="show">{{a.c}}</span>
+      <p l-if="show">{{a.c}}</p>
+      <p l-onclick="talk">{{b}}</p>
       {{b}}{{d}}
       <ul>
         <li l-for="(item,index) in arr">{{item}}   {{index}}   {{b}}</li>
@@ -37,6 +38,11 @@
         c:'world',
         show:true,
         arr:['asdfsadf','liberty'],
+      },
+      methods:{
+        talk(){
+          alert(111+this.c);
+        }
       },
       watch:{
         arr(value){
