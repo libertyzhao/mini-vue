@@ -1,4 +1,5 @@
 import { createDom,childrenDom } from './template';
+import { createVnode } from './htmlParse';
 
 //保证每次diff之后，oldVnode永远是最新的
 export function diff(oldVnode,Vnode){
@@ -8,7 +9,7 @@ export function diff(oldVnode,Vnode){
 		const el = oldVnode.el;
 		const parentEl = el.parentNode;
 		createDom(Vnode);//生成新的dom
-		if (parentEle !== null) {
+		if (parentEl !== null) {
 			parentEl.insertBefore(Vnode.el,el.nextSibling)//插入新的dom
 			parentEl.removeChild(el)//移除之前的dom
 			oldVnode = Vnode
@@ -24,9 +25,9 @@ function sameNode(oldVnode,Vnode){
 function patchVnode(oldVnode,Vnode){
 	let oldChildren = oldVnode.children, children = Vnode.children;
 	if(Vnode.tagName === 'text' && oldVnode.tagName === 'text' ){
-		if(Vnode.children !== oldVnode.children){
-			oldVnode.el.textContent = Vnode.children;
-			oldVnode.children = Vnode.children;
+		if(Vnode.text !== oldVnode.text){
+			oldVnode.el.textContent = Vnode.text;
+			oldVnode.text = Vnode.text;
 		}
 	}else {
 		if(oldVnode.attrString !== Vnode.attrString){			//需要替换props
@@ -57,7 +58,7 @@ function diffChildren(oldVnodeChildren,VnodeChildren){
 	const max = Math.max(VnodeChildren.length,oldVnodeChildren.length);
 	for(var i = 0 ; i < max ; i++ ){
 		let oldVnode = oldVnodeChildren[i];
-		let Vnode = VnodeChildren[i];
+		let Vnode = VnodeChildren[i] || createVnode();
 		diff(oldVnode,Vnode);
 	}
 }

@@ -1,15 +1,11 @@
 import { parseHtml } from './htmlParse';
 import { diff } from './diff';
+import { optimize } from './directive';
 
-export function createRender(template) {
-  let reg = /{{[ \t]*([\w\W]*?)[ \t]*}}/g,
-    result;
-  let index = 0;
-  while ((result = reg.exec(template))) {
-    template = template.replace(result[0], "${lv." + result[1] + "}");
-  }
-  let render = new Function("lv", "return `" + template + "`");
-  return render;
+export function createRender(lv,template) {
+	let Vnode = parseHtml(template);//生成基础虚拟dom，此时data和l-if等标签和数据还没有解析
+	optimize(Vnode,lv);//进行data和l-if,l-for等标签的解析
+	return Vnode;
 }
 
 export function cleanHtml(template){
@@ -18,9 +14,11 @@ export function cleanHtml(template){
 	return div.innerHTML;
 }
 
-export function renderHtml(dom,render){
-	let html = render(this);
-	let vnode = parseHtml(html);
+export function renderHtml(dom,template){
+	//在这里给一个template，带v-if那些，然后吐出一个ok的Vnode;
+	let vnode = createRender(this,template);
+	// let html = render(this);
+	// let vnode = parseHtml(html);
 	console.log(vnode);
 	if(!this.oldVnode){
 		this.oldVnode = vnode;
@@ -34,13 +32,16 @@ export function renderHtml(dom,render){
 	}
 }
 
-export function createDom(vnode,fra){
+export function createDom(vnode){
+	var dom = null;
 	if(vnode.tagName === ''){
 		return ;
 	}if(vnode.tagName === 'text'){
-		var dom = document.createTextNode(vnode.children);
+		dom = document.createTextNode(vnode.text);
+	}else if(vnode.tagName === 'comment'){
+		dom = document.createComment(vnode.text)
 	}else{
-		var dom = document.createElement(vnode.tagName);
+		dom = document.createElement(vnode.tagName);
 		childrenDom(vnode.children,dom);
 	}
 	vnode.el = dom;

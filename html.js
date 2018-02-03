@@ -33,7 +33,7 @@ function parseText(textLength, html, Vnode) {
   }
   var text = html.slice(0, textLength);
   Vnode.tagName = "text";
-  Vnode.children = text;
+  Vnode.text = text;
   stackAdd(Vnode);
   return forward(html, text.length).trim();
 }

@@ -124,12 +124,12 @@ function arrReactive(arr, ob) {
   arr.__proto__ = middleware;
 }
 
-export function Render(lv, template, htmlAst) {
+export function Render(lv, template) {
 	let dom = document.querySelector(lv.el);
-  let render = createRender(template);
+  // let render = createRender(template);
   DepTarget = {
     type:'render',
-    cb:renderHtml.bind(lv,dom,render),
+    cb:renderHtml.bind(lv,dom,template),
   };
   DepTarget.cb();
 	DepTarget = null;

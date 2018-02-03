@@ -17,8 +17,11 @@ LV.prototype.initRender = function(lv){
 	let templateDom = lv.template;
 	let template = document.querySelector(templateDom).innerText.trim();
 	template = cleanHtml(template);
-	var htmlAst = parseHtml(template);
-	var render = new Render(lv,template,htmlAst);
+
+	// var htmlAst = parseHtml(template);
+	// console.log(htmlAst);
+
+	var render = new Render(lv,template);
 }
 
 LV.prototype.initState = function(lv){

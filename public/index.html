@@ -20,8 +20,11 @@
     <div class="a" data-abc="123">
       <img src="" alt="" >
       <input type="text" >
-      <span>{{a.c}}</span>
+      <span l-if="show">{{a.c}}</span>
       {{b}}{{d}}
+      <ul>
+        <li l-for="(item,index) in arr">{{item}}   {{index}}   {{b}}</li>
+      </ul>
     </div>
   </script>
   <script>
@@ -32,7 +35,8 @@
         a:{c:1},
         b:'hello',
         c:'world',
-        arr:[1,2],
+        show:true,
+        arr:['asdfsadf','liberty'],
       },
       watch:{
         arr(value){
