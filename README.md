@@ -11,5 +11,5 @@
 - [x] dom api事件代理，和视图层有关的操作全在这里
 
 
-<img width="500"  src="https://github.com/liberties/mini-vue/blob/master/static/mini-vue.gif"/>
+<img width="800"  src="https://github.com/liberties/mini-vue/blob/master/static/mini-vue.gif"/>
 
