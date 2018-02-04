@@ -13,7 +13,7 @@
 
 <img width="900"  src="https://github.com/liberties/mini-vue/blob/master/static/mini-vue.gif"/>
 
-将data和watch，computed，render绑定关联起来，构成响应式系统的核心。
+将data和watch，computed，render绑定关联起来，通过Object.defineProperty构成响应式系统的核心。其中数组的响应式通过劫持push，pop方法实现。
 
 render每次都会将template处理成一个纯粹的vnode。
 
