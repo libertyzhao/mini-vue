@@ -5,10 +5,11 @@ import { domProxy } from "./domApiProxy";
 
 let domProxyDelay = eventloop(domProxy);
 
+//将含有data和l-if,l-for等标签的vnode，解析成正常的vnode
 export function optimize(Vnode, lv) {
   let attr = Vnode.attrList;
   parseDirective(attr, Vnode.parent, Vnode, lv);
-  parseData(Vnode, lv);
+  parseData(Vnode, lv);//将变量替换成数据
   dfsChildren(Vnode, lv);
 }
 
@@ -49,8 +50,8 @@ function parseData(vnode, lv) {
   }
 }
 
+//生成一个函数，调用该函数可以直接生成一个编译后的html片段
 function injectData(template) {
-  //这里只添加最后的数据
   let reg = /{{[ \t]*([\w\W]*?)[ \t]*}}/g,
     result,
     index = 0;
@@ -66,7 +67,7 @@ function lIf(attr, parent, vnode, lv) {
   let attrArr = attr.split("="),
     val = attrArr[1],
     { value } = getDirectiveValue(val, lv);
-  value = JSON.parse(value);
+  value = JSON.parse(value);//处理false或者true是字符串的情况
   if (!value) {
     vnode.directive = true;
     vnode.text = vnode.tagName;
@@ -82,7 +83,7 @@ function lOn(attr, parent, vnode, lv) {
     val = attrArr[1],
     { result } = getDirectiveValue(val, lv),
     event = key.split("on")[1];
-  domProxyDelay.deady(() => {
+  domProxyDelay.deady(() => {//延迟的dom操作
     domProxy.addEventListener(vnode.el, event, lv[result[result.length - 1]]);
   });
 }
@@ -93,7 +94,7 @@ function lModel(attr, parent, vnode, lv) {
     val = attrArr[1],
     { value, result } = getDirectiveValue(val, lv);
   val = val.replace(/"/g, "");
-  domProxyDelay.deady(() => {
+  domProxyDelay.deady(() => {//延迟操作，因为这个时候el都没有
     domProxy.setValue(vnode.el, value);
     domProxy.addEventListener(vnode.el, "input", e => {
       lv[val] = e.target.value;
@@ -109,12 +110,12 @@ function lFor(attr, parent, vnode, lv) {
     arr = value.split(","),
     item = result[0],
     index = "index";
-  if (result.length > 3) {
+  if (result.length > 3) {//有没有index
     index = result[1];
   }
   let node, nodeIndex;
   for (var i = 0, length = arr.length; i < length; i++) {
-    if (i < length - 1) {
+    if (i < length - 1) {//复制node节点插进去
       node = cloneVnode(vnode);
       nodeIndex = findIndex(parent.children, vnode);
       parent.children.splice(nodeIndex + 1, 0, node);

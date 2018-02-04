@@ -1,4 +1,4 @@
-
+//代理view层面的操作，假如这里是桌面端呢？是不是把html的dom操作换成桌面端的dom操作就可以了？
 export let domProxy = {
   createElement(tag) {
     return document.createElement(tag);

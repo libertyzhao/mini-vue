@@ -22,10 +22,8 @@ LV.prototype.init = function(options) {
 LV.prototype.initRender = function(lv) {
   let templateDom = lv.template;
   let template = document.querySelector(templateDom).innerText.trim();
-  template = cleanHtml(template);
+  template = cleanHtml(template);//清理html，防止一些用户奇怪的输入
 
-  // var htmlAst = parseHtml(template);
-  // console.log(htmlAst);
   let dom = document.querySelector(lv.el);
   var render = new Render(lv, template, dom);
 };
@@ -50,7 +48,7 @@ LV.prototype.initMethod = function(lv) {
   bindThis(lv.computed, lv);
   bindThis(lv.watch, lv);
   Object.keys(methods).forEach(key => {
-    defineProxy(lv, key, methods);
+    defineProxy(lv, key, methods);//属性代理
   });
 };
 
@@ -58,7 +56,7 @@ function initData(lv) {
   let data = lv.data;
   Object.keys(data).forEach(key => {
     defineProxy(lv, key, data);
-    defineReactive(data, key);
+    defineReactive(data, key);//数据响应式
   });
 }
 

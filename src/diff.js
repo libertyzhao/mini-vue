@@ -2,18 +2,18 @@ import { createDom, childrenDom } from "./template";
 import { createVnode } from "./htmlParse";
 import { domProxy } from "./eventloop";
 
-//保证每次diff之后，oldVnode永远是最新的
+//每次diff之后，会把vnode的更改项同步到oldVnode上，保证oldVnode永远是最新的
 export function diff(oldVnode, Vnode, parent, index) {
   if (sameNode(oldVnode, Vnode)) {
     patchVnode(oldVnode, Vnode);
-  } else {
+  } else {//如果是不同标签，直接删了重建
     const el = oldVnode.el;
     const parentEl = domProxy.parentNode(el);
     createDom(Vnode); //生成新的dom
     if (parentEl !== null) {
       domProxy.insertBefore(parentEl, Vnode.el, domProxy.nextSibling(el)); //插入新的dom
       domProxy.removeChild(parentEl, el); //移除之前的dom
-      if (parent) {
+      if (parent) {//同步vnode上的修改到oldVnode上
         parent[index] = Vnode;
       }
     }

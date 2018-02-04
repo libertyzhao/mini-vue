@@ -1,14 +1,16 @@
-import { parseHtml } from "./htmlParse";
+import { parseHtml,cloneVnode } from "./htmlParse";
 import { diff } from "./diff";
 import { optimize } from "./directive";
 import { domProxy } from "./eventloop";
 
 export function createRender(lv, template) {
-  let Vnode = parseHtml(template); //生成基础虚拟dom，此时data和l-if等标签和数据还没有解析
-  optimize(Vnode, lv); //进行data和l-if,l-for等标签的解析
+  lv.AstDomTree =lv.AstDomTree || parseHtml(template); //生成基础ast，此时data和l-if等标签和数据还没有解析
+  let Vnode = cloneVnode(lv.AstDomTree);
+  optimize(Vnode, lv); //进行data和l-if,l-for等标签的解析,生成vnode
   return Vnode;
 }
 
+//用来稍微规范一下html
 export function cleanHtml(template) {
   var div = domProxy.createElement("div");
   div.innerHTML = template.trim();
@@ -19,13 +21,13 @@ export function renderHtml(dom, template) {
   //在这里给一个template，带v-if那些，然后吐出一个ok的Vnode;
   let vnode = createRender(this, template);
   // console.log(vnode);
-  if (!this.oldVnode) {
+  if (!this.oldVnode) {//第一次页面渲染
     this.oldVnode = vnode;
     var fra = domProxy.createDocumentFragment();
     var elDom = createDom(vnode, fra);
     fra.appendChild(elDom);
     dom.appendChild(fra);
-  } else {
+  } else {//以后只用diff比较差异
     this.newVnode = vnode;
     diff(this.oldVnode, this.newVnode);
   }

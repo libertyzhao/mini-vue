@@ -1,5 +1,6 @@
 import { createRender, renderHtml } from "./template";
 
+//属性代理
 export function defineProxy(lv, key, proxy) {
   Object.defineProperty(lv, key, {
     get() {
@@ -11,6 +12,7 @@ export function defineProxy(lv, key, proxy) {
   });
 }
 
+//响应系统核心
 export function defineReactive(target, key) {
   var ob = new Observable(target[key]);
   recursiveObj(target[key], ob);
@@ -118,6 +120,7 @@ export function Computed(lv, computed, key) {
   DepTarget = null;
 }
 
+//数组响应式，其实就是代理数组的几个修改数组的方法
 function arrReactive(arr, ob) {
   let arrProto = Object.create(Array.prototype);
   let arrMethods = [

@@ -16,7 +16,14 @@
       {{b}}{{arr[0]}}
     </div>
     ...
-    一直根据当前html解析出来的节点和当前的空vnode来处理，vnode有parent
+    一直根据当前html解析出来的节点和当前的空vnode来处理
+    比如：<div><span>sdfsdf<span><div>
+      解析出了<div>,说明后面的是他的子元素,target下沉
+      然后解析出了<span>,把span放到div的子元素里面,后面的元素是span的子元素,target下沉
+      然后解析出了sdfsdf,把它放到span的子元素里面,后面可能是兄弟元素或者结束标签,target平移
+      解析出了</span>,说明span标签结束了,后面可能跟着span的兄弟标签或者</div>,此时target上浮
+      解析出了</div>,说明div标签结束了,后面可能跟着div的兄弟标签,此时target上浮
+      发现html为空了,解析结束
  */
 
 var singleTag = "br hr img input";//单闭合标签白名单
@@ -25,6 +32,7 @@ var startTagOpen = /<(\/)?([a-zA-Z]*)[^>\/]*(\/)?>/;
 var attribute = /^\s*([^\s=]*)=(["'\w\s(),]*"|')/; //考虑兼容l-for指令的一些情况
 var startTagClose = /^\s*(\/?)>/;
 var endTag = `<\/([a-zA-Z]*)[^>]*>`;
+
 
 export function parseHtml(html, Vnode = createVnode()) {
   if (!html) {
@@ -145,7 +153,9 @@ export function cloneVnode(Vnode) {
 function cloneChildren(children, node) {
   let nodeChildren = node.children;
   children.forEach(item => {
-    nodeChildren.push(cloneVnode(item));
+    let child = cloneVnode(item);
+    child.parent = node;
+    nodeChildren.push(child);
   });
 }
 
