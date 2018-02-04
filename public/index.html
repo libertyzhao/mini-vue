@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <link rel="icon" href="./favicon.ico">
   <link rel="stylesheet" href="./static/style.css">
+  <script src="./static/bundle.js"></script>
   <style>
     input{
       border:none;
@@ -15,16 +16,14 @@
 </head>
 <body>
   <div id="root"></div>
-  <script src="./static/bundle.js"></script>
   <script id="t1" type="text/html">
     <div class="a" data-abc="123">
-      <img src="" alt="" >
-      <input type="text" >
+      <input type="text" l-model="b">
       <p l-if="show">{{a.c}}</p>
       <p l-onclick="talk">{{b}}</p>
       {{b}}{{d}}
       <ul>
-        <li l-for="(item,index) in arr">{{item}}   {{index}}   {{b}}</li>
+        <li l-for="(item,index) in arr">{{item}}   {{index}}  </li>
       </ul>
     </div>
   </script>
@@ -41,17 +40,17 @@
       },
       methods:{
         talk(){
-          console.log(11);
+          this.show = !this.show;
         }
       },
       watch:{
-        arr(value){
-          console.log('我更新了'+value);
+        c(value){
+          console.log('触发了watch'+value);
         }
       },
       computed:{
         d(){
-          console.log('自动执行');
+          console.log('触发了computed');
           return this.c;
         }
       }

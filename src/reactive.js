@@ -38,16 +38,20 @@ function recursiveObj(obj, ob) {
 
 var DepTarget = null; //被收集的watcher
 
-let notifyStrategy = {//通知策略
-  'watch':function(func,args){
-    func.apply(undefined,args);
+let notifyStrategy = {
+  //通知策略
+  watch: function(func, args) {
+    //多次修改时，考虑用户可能需要触发watch里面的钩子
+    func.call(undefined, args);
   },
-  'computed':function(func,args){
+  computed: function(func, args) {
+    //多次修改时，考虑用户可能需要触发computed里面的钩子
     func.call(undefined);
   },
-  rendering:false,
-  'render':function(func,args){
-    if(!this.rendering){
+  rendering: false,
+  render: function(func, args) {
+    if (!this.rendering) {
+      //只用重新渲染diff一次就够了
       this.rendering = true;
       setTimeout(() => {
         func();
@@ -55,13 +59,13 @@ let notifyStrategy = {//通知策略
       }, 0);
     }
   }
-}
+};
 
 function Observable(value) {
   this.value = value;
   this.dep = [];
   this.get = function() {
-    if (DepTarget) {
+    if (DepTarget && filterRender(this.dep, DepTarget.type)) {
       this.dep.push(DepTarget);
     }
     return this.value;
@@ -74,17 +78,29 @@ function Observable(value) {
     var deps = this.dep.slice();
     for (var i = 0, length = deps.length; i < length; i++) {
       let type = deps[i].type,
-          func = deps[i].cb,
-          args = value;
-      notifyStrategy[type](func,args);
+        func = deps[i].cb,
+        args = value;
+      notifyStrategy[type](func, args);
     }
   };
+  function filterRender(dep, type) {
+    //一个被观察者的观察者数组中，只需要一个render
+    let bool = true;
+    dep.some(item => {
+      if (item.type === "render" && type === "render") {
+        bool = false;
+        return true;
+      }
+      return false;
+    });
+    return bool;
+  }
 }
 
 export function Watcher(lv, watch, key) {
   DepTarget = {
-    type:'watch',
-    cb:watch[key],
+    type: "watch",
+    cb: watch[key]
   };
   lv.data[key];
   DepTarget = null;
@@ -93,8 +109,8 @@ export function Watcher(lv, watch, key) {
 export function Computed(lv, computed, key) {
   lv.data = lv.data || {};
   DepTarget = {
-    type:'computed',
-    cb:() => {
+    type: "computed",
+    cb: () => {
       lv.data[key] = computed[key]();
     }
   };
@@ -117,21 +133,18 @@ function arrReactive(arr, ob) {
   arrMethods.forEach(method => {
     middleware[method] = (...args) => {
       Array.prototype[method].apply(arr, args);
-      ob.notify(arr);
+      ob.notify(args);
     };
   });
   middleware.__proto__ = arrProto;
   arr.__proto__ = middleware;
 }
 
-export function Render(lv, template) {
-	let dom = document.querySelector(lv.el);
-  // let render = createRender(template);
+export function Render(lv, template, dom) {
   DepTarget = {
-    type:'render',
-    cb:renderHtml.bind(lv,dom,template),
+    type: "render",
+    cb: renderHtml.bind(lv, dom, template)
   };
   DepTarget.cb();
-	DepTarget = null;
+  DepTarget = null;
 }
-
