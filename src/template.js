@@ -18,9 +18,7 @@ export function cleanHtml(template) {
 export function renderHtml(dom, template) {
   //在这里给一个template，带v-if那些，然后吐出一个ok的Vnode;
   let vnode = createRender(this, template);
-  // let html = render(this);
-  // let vnode = parseHtml(html);
-  console.log(vnode);
+  // console.log(vnode);
   if (!this.oldVnode) {
     this.oldVnode = vnode;
     var fra = domProxy.createDocumentFragment();

@@ -22,7 +22,7 @@ export function eventloop(domProxy, whiteList) {
       let returnData = null;
       if (event.loopFunc.includes(key) && event.stack.length <= 0) {
         setTimeout(() => {
-          whiteList && console.log("eventloop末尾一波更新");
+          whiteList && console.log("eventloop末尾一波更新dom");
           event.run();
         }, 0);
       }

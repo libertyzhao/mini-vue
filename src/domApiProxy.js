@@ -1,3 +1,4 @@
+
 export let domProxy = {
   createElement(tag) {
     return document.createElement(tag);

@@ -19,7 +19,7 @@
     一直根据当前html解析出来的节点和当前的空vnode来处理，vnode有parent
  */
 
-var singleTag = "br hr img input";
+var singleTag = "br hr img input";//单闭合标签白名单
 
 var startTagOpen = /<(\/)?([a-zA-Z]*)[^>\/]*(\/)?>/;
 var attribute = /^\s*([^\s=]*)=(["'\w\s(),]*"|')/; //考虑兼容l-for指令的一些情况
