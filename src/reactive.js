@@ -98,6 +98,10 @@ function Observable(value) {
     return bool;
   }
 }
+/**
+ * 这里的响应式：
+ * 通过给DepTarget赋值观察者对象，然后通过lv.data[key]触发watch方法里面的数据的get，然后被观察者对象就会将观察者对象加入到自己的被观察者数组中。computed是一个意思
+ */
 
 export function Watcher(lv, watch, key) {
   DepTarget = {
