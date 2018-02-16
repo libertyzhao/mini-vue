@@ -1,5 +1,6 @@
 import { domProxy } from "./domApiProxy";
 
+//该白名单会被放入
 let list = ["appendChild", "removeChild", "insertBefore", "setTextContent"];
 
 //事件循环，将dom的api操作放入eventloop中，这里不考虑微任务和宏任务

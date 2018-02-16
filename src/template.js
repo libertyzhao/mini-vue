@@ -5,7 +5,7 @@ import { domProxy } from "./eventloop";
 
 export function createRender(lv, template) {
   lv.AstDomTree =lv.AstDomTree || parseHtml(template); //生成基础ast，此时data和l-if等标签和数据还没有解析
-  let Vnode = cloneVnode(lv.AstDomTree);
+  let Vnode = cloneVnode(lv.AstDomTree);//创建副本，生成虚拟dom
   optimize(Vnode, lv); //进行data和l-if,l-for等标签的解析,生成vnode
   return Vnode;
 }
@@ -18,7 +18,7 @@ export function cleanHtml(template) {
 }
 
 export function renderHtml(dom, template) {
-  //在这里给一个template，带v-if那些，然后吐出一个ok的Vnode;
+  //在这里给一个template，带v-if那些，然后吐出一个ok的Vnode,所以l-if，l-for都被解析好了;
   let vnode = createRender(this, template);
   // console.log(vnode);
   if (!this.oldVnode) {//第一次页面渲染
