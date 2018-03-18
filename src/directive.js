@@ -5,7 +5,7 @@ import { domProxy } from "./domApiProxy";
 
 let domProxyDelay = eventloop(domProxy);
 
-//将含有data和l-if,l-for等标签的vnode，解析成正常的vnode
+//将含有data和l-if,l-for等标签的ast，解析成正常的vnode
 export function optimize(Vnode, lv) {
   let attr = Vnode.attrList;
   parseDirective(attr, Vnode.parent, Vnode, lv);
