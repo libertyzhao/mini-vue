@@ -71,8 +71,6 @@ function initComputed(lv) {
   let computed = lv.computed;
   Object.keys(computed).forEach(key => {
     let computer = new Computed(lv, computed, key);
-    defineProxy(lv, key, lv.data);
-    defineReactive(lv.data, key);
   });
 }
 
